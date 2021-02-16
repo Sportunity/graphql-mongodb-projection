@@ -1,7 +1,7 @@
 const isBoolean = val => typeof val === 'boolean'
 const isString = val => typeof val === 'string'
 
-export function infoToProjection(info) {
+export function infoToProjection(info, context) {
   var fieldNodes = [] ; 
   
   if (info.fieldNodes && info.fieldNodes.length > 0) {
@@ -20,7 +20,8 @@ export function infoToProjection(info) {
     fieldNodes = [fieldNode];
   }
 
-  let context = (info.fieldASTs || fieldNodes)[0] ;
+  if (!context || typeof context === 'undefined')
+    context = (info.fieldASTs || fieldNodes)[0];
 
   return context.selectionSet.selections.reduce((projection, selection) => {
     switch (selection.kind) {
