@@ -1,7 +1,27 @@
 const isBoolean = val => typeof val === 'boolean'
 const isString = val => typeof val === 'string'
 
-export function infoToProjection(info, context = (info.fieldASTs || info.fieldNodes)[0]) {
+export function infoToProjection(info) {
+  var fieldNodes = [] ; 
+  
+  if (info.fieldNodes && info.fieldNodes.length > 0) {
+    var fieldNode = info.fieldNodes[0];
+
+    for (var i = 1 ; i < info.fieldNodes.length ; i++) {
+      for (var j = 0 ; j < info.fieldNodes[i].selectionSet.selections.length ; j++) {
+        let index = fieldNode.selectionSet.selections.findIndex(s => s.name.value === info.fieldNodes[i].selectionSet.selections[j].name.value)
+
+        if (index < 0 && info.fieldNodes[i].selectionSet.selections[j].kind === 'Field') {
+          fieldNode.selectionSet.selections.push(info.fieldNodes[i].selectionSet.selections[j])
+        }
+      }
+    }
+
+    fieldNodes = [fieldNode];
+  }
+
+  let context = (info.fieldASTs || fieldNodes)[0] ;
+
   return context.selectionSet.selections.reduce((projection, selection) => {
     switch (selection.kind) {
       case 'Field':
