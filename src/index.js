@@ -11,7 +11,7 @@ export function infoToProjection(info, context) {
       for (var j = 0 ; j < info.fieldNodes[i].selectionSet.selections.length ; j++) {
         let index = fieldNode.selectionSet.selections.findIndex(s => s.name.value === info.fieldNodes[i].selectionSet.selections[j].name.value)
 
-        if (index < 0 && info.fieldNodes[i].selectionSet.selections[j].kind === 'Field') {
+        if (index < 0) {
           fieldNode.selectionSet.selections.push(info.fieldNodes[i].selectionSet.selections[j])
         }
       }
